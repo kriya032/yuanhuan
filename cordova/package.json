@@ -28,7 +28,6 @@
       "android"
     ],
     "plugins": {
-      "cordova-plugin-whitelist": {}
     }
   }
 }
