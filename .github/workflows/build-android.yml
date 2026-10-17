@@ -24,11 +24,21 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 安装 Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: 接受 Android 许可
-        run: yes | sdkmanager --licenses || true
+      - name: 准备 Android SDK（用服务器预装版，不再调用 setup-android）
+        run: |
+          export ANDROID_HOME="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
+          echo "$ANDROID_HOME/platform-tools" >> "$GITHUB_PATH"
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          echo "SDK 目录内容："
+          ls "$ANDROID_HOME" || true
+          SDKMANAGER="$(find "$ANDROID_HOME" -name sdkmanager -type f 2>/dev/null | head -1)"
+          echo "sdkmanager 路径: $SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses > /dev/null 2>&1 || true
+          "$SDKMANAGER" "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1 || true
+          echo "已安装的 platforms："
+          ls "$ANDROID_HOME/platforms" || true
 
       - name: 安装 Cordova CLI
         run: npm install -g cordova
