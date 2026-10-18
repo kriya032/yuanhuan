@@ -1,5 +1,8 @@
 name: Build 元幻 Android APK
 
+# 无需本地安装 Android SDK：GitHub 云端构建
+# 用法：Actions → 选择本工作流 → Run workflow，构建完成后在 Artifacts 下载 APK
+# 兼容两种仓库结构：工程文件在根目录，或在 cordova/ 子目录里（自动检测）
 on:
   workflow_dispatch:
   push:
